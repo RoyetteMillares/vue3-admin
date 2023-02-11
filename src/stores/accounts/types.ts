@@ -1,5 +1,6 @@
 export interface AgentCenter {
-  account_number: number
+  account_number: string
   accountList: any[]
   total: number
+  all: any[][]
 }

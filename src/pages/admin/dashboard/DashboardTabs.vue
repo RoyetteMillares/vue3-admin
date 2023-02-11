@@ -28,15 +28,24 @@
         <table class="va-table va-table--striped va-table--hoverable">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Country</th>
-              <th>Status</th>
+              <th>#</th>
+              <th>Account</th>
+              <th>Trx Balance</th>
+              <th>Percentage</th>
+              <th>Tron Power</th>
+              <th>Txn Count</th>
+              <th>Latest Txn Time (Local)</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(account, i) in accounts" :key="i">
-              <td>{{ account }}</td>
+              <td>{{ i }}</td>
+              <td>{{ account.address }}</td>
+              <td>{{ formatter.format(account.balance) }}</td>
+              <td>{{ account.latestOperationTime }}</td>
+              <td>{{ account.power }}</td>
+              <td>{{ account.totalTransactionCount }}</td>
+              <td>{{ dayjs(account.updateTime).format('YYYY-MM-DD') }}</td>
             </tr>
           </tbody>
         </table>
@@ -49,14 +58,20 @@
   import { onMounted, computed, ref } from 'vue'
   import { useToast } from 'vuestic-ui'
   import { useI18n } from 'vue-i18n'
+  import dayjs from 'dayjs'
+
   import { useAccountCenter } from '../../../stores/accounts/index'
   const { t } = useI18n()
 
   const { init, close, closeAll } = useToast()
 
+  const accountStore = useAccountCenter()
   const accounts = computed<Array<any>>(() => accountStore.accountList)
 
-  const accountStore = useAccountCenter()
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  })
 
   onMounted(() => {
     accountStore.GET_ACCOUNT_LIST()
